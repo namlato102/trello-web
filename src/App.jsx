@@ -13,6 +13,11 @@ import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness'
 import Box from '@mui/material/Box'
 
 
+/**
+ * A component that allows the user to select dark-light-system mode.
+ *
+ * @returns {JSX.Element} The rendered ModeSelect component.
+ */
 function ModeSelect() {
   const { mode, setMode } = useColorScheme()
 
@@ -55,7 +60,6 @@ function ModeSelect() {
 }
 
 function App() {
-  // const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
   return (
     <>
       <ModeSelect />
