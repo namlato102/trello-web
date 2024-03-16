@@ -1,5 +1,4 @@
 import { useColorScheme } from '@mui/material/styles'
-// import useMediaQuery from '@mui/material/useMediaQuery'
 
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
@@ -12,6 +11,7 @@ import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness'
 
 import Box from '@mui/material/Box'
 
+import Container from '@mui/material/Container'
 
 /**
  * A component that allows the user to select dark-light-system mode.
@@ -62,7 +62,39 @@ function ModeSelect() {
 function App() {
   return (
     <>
-      <ModeSelect />
+      <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
+        {/* App Bar */}
+        <Box sx={{
+          backgroundColor: 'primary.light',
+          width: '100%', height: (theme) => theme.trello.appBarHeight,
+          display: 'flex', alignItems: 'center'
+        }}>
+          <ModeSelect />
+        </Box>
+
+        {/* Board Bar */}
+        <Box sx={{
+          backgroundColor: 'primary.dark',
+          width: '100%',
+          height: (theme) => theme.trello.boardBarHeight,
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          Board Bar
+        </Box>
+
+        {/* Board Content */}
+        <Box sx={{
+          backgroundColor: 'primary.main',
+          width: '100%',
+          height: (theme) => `calc(100vh - ${theme.trello.appBarHeight} - ${theme.trello.boardBarHeight})`,
+          display: 'flex',
+          alignItems: 'center'
+        }} >
+          Board Content
+        </Box>
+
+      </Container>
     </>
   )
 }
