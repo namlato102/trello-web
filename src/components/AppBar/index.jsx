@@ -21,7 +21,9 @@ function AppBar() {
     <Box px={1} sx={{
       width: '100%', height: (theme) => theme.trello.appBarHeight,
       display: 'flex', alignItems: 'center',
-      justifyContent: 'space-between'
+      justifyContent: 'space-between',
+      gap: 1,
+      overflowX: 'auto'
     }}>
       <Box sx={{ display:'flex', alignItems:'center', gap: 1 }}>
         {/* appMenu */}
@@ -33,25 +35,26 @@ function AppBar() {
           <Typography variant="span" sx={{ fontSize:'1.2rem', fontWeight: 'bold', color: 'primary.main' }}>MyTrello</Typography>
         </Box>
 
-        {/* Workspaces */}
-        <Workspaces />
+        <Box sx={{ display: { xs:'none', md: 'flex' } }}>
+          {/* Workspaces */}
+          <Workspaces />
 
-        {/* Recent */}
-        <Recent />
+          {/* Recent */}
+          <Recent />
 
-        {/* Starred */}
-        <Starred />
+          {/* Starred */}
+          <Starred />
 
-        {/* Templates */}
-        <Templates />
+          {/* Templates */}
+          <Templates />
 
-        {/* Create */}
-        <Button variant="outlined">Create</Button>
+          {/* Create */}
+          <Button variant="outlined">Create</Button>
+        </Box>
       </Box>
-
       <Box sx={{ display:'flex', alignItems:'center', gap: 1 }}>
         {/* Searchbar */}
-        <TextField id="outlined-search" label="Search..." type="search" size='small'/>
+        <TextField id="outlined-search" label="Search..." type="search" size='small' sx={{ minWidth: '120px' }}/>
 
         {/* ModeToggle */}
         <ModeSelect />
