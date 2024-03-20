@@ -5,7 +5,7 @@ import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
 const theme = extendTheme({
   trello: {
     appBarHeight: '58px',
-    boardBarHeight: '60px'
+    boardBarHeight: '58px'
   },
   colorSchemes: {
     light: {
