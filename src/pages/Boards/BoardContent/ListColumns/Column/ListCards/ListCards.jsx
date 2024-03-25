@@ -1,7 +1,8 @@
 import Box from '@mui/material/Box'
 import Cards from './Card/Cards'
 
-function ListCards() {
+function ListCards(props) {
+  const { cards } = props
   return (
     <Box sx={{
       display: 'flex',
@@ -25,17 +26,9 @@ function ListCards() {
       }
     }}>
       {/* Cards */}
-      <Cards />
-      <Cards temporaryHideMedia/>
-      <Cards temporaryHideMedia/>
-      <Cards temporaryHideMedia/>
-      <Cards temporaryHideMedia/>
-      <Cards temporaryHideMedia/>
-      <Cards temporaryHideMedia/>
-      <Cards temporaryHideMedia/>
-      <Cards temporaryHideMedia/>
-      <Cards temporaryHideMedia/>
-      <Cards temporaryHideMedia/>
+      {cards?.map((card) => {
+        return (<Cards key={card._id} card={card} />)
+      })}
     </Box>
   )
 }

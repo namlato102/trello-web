@@ -3,8 +3,8 @@ import Column from './Column/Column'
 import Button from '@mui/material/Button'
 import NoteAddIcon from '@mui/icons-material/NoteAdd'
 
-function ListColumns() {
-
+function ListColumns(props) {
+  const { columns } = props
   return (
     // Y responsive scrollbar
     <Box sx={{
@@ -18,7 +18,9 @@ function ListColumns() {
         m: 2
       }
     }}>
-      <Column />
+      {columns?.map((column) => {
+        return (<Column key={column._id} column={column} />)
+      })}
 
       {/* Button Add new Column */}
       <Box sx={{
