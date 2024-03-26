@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box'
 import Cards from './Card/Cards'
 
-function ListCards(props) {
-  const { cards } = props
+function ListCards({ cards }) {
+  // const { cards } = props
   return (
     <Box sx={{
       display: 'flex',

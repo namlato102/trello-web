@@ -8,8 +8,8 @@ import GroupIcon from '@mui/icons-material/Group'
 import CommentIcon from '@mui/icons-material/Comment'
 import AttachmentIcon from '@mui/icons-material/Attachment'
 
-function Cards(props) {
-  const { card } = props
+function Cards({ card }) {
+  // const { card } = props
   /**
    * Determines whether to show card actions based on the presence of memberIds, comments, or attachments.
    * @returns {boolean} True if any of the card actions should be shown, false otherwise.
