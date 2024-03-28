@@ -115,19 +115,14 @@ function BoardContent({ board }) {
       }}>
         <ListColumns columns={orderedColumns} />
         <DragOverlay dropAnimation={dropAnimation}>
-          {/* If activeDragItemType is falsy (e.g., null, undefined, false, 0, NaN, or an empty string), render nothing. */}
-          {!activeDragItemType && null}
-
-          {/*
+          {/* If activeDragItemType is falsy (e.g., null, undefined, false, 0, NaN, or an empty string), render nothing.
             * If activeDragItemType is truthy and its value is equal to ACTIVE_DRAG_ITEM_TYPE.COLUMN,
             * render the Column component and pass activeDragItemData as a prop named column to it.
-            * */}
-          {(activeDragItemType && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragItemData} />}
-
-          {/*
             * If activeDragItemType is truthy and its value is equal to ACTIVE_DRAG_ITEM_TYPE.CARD,
             * render the Cards component and pass activeDragItemData as a prop named card to it.
             * */}
+          {!activeDragItemType && null}
+          {(activeDragItemType && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragItemData} />}
           {(activeDragItemType && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) && <Cards card={activeDragItemData} />}
         </DragOverlay>
       </Box>
