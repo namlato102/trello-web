@@ -11,10 +11,14 @@ import {
   useSensors,
   MouseSensor,
   TouchSensor,
-  closestCorners
+  closestCorners,
+  closestCenter,
+  pointerWithin,
+  rectIntersection,
+  getFirstCollision
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import Column from './ListColumns/Column/Column'
 import Cards from './ListColumns/Column/ListCards/Card/Cards'
 import { cloneDeep } from 'lodash'
@@ -50,6 +54,9 @@ function BoardContent({ board }) {
   const [activeDragItemData, setActiveDragItemData] = useState(null)
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState(null)
 
+  // last collision detection point
+  const lastOverId = useRef(null)
+
   useEffect(() => {
     setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
   }, [board])
@@ -58,6 +65,43 @@ function BoardContent({ board }) {
   const findColumnByCardId = (cardId) => {
     return orderedColumns.find(column => column.cards.map(card => card._id)?.includes(cardId))
   }
+
+  // default collision detection strategy
+  const collisionDetectionStrategy = useCallback((args) => {
+    // drag column
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+      // spread the args object to pass all the properties
+      return closestCorners({ ...args })
+    }
+
+    // find collision between pointer and intersection
+    const pointerIntersections = pointerWithin(args)
+    // return an array of intersections if there are any
+    const intersections = !!pointerIntersections?.length
+      ? pointerIntersections
+      : rectIntersection(args)
+
+    let overId = getFirstCollision(intersections, 'id')
+
+    if (overId) {
+      const intersectColumn = orderedColumns.find(column => column._id === overId)
+      if (intersectColumn) {
+        // console.log('overId before closestCenter: ', overId)
+        overId = closestCenter({
+          ...args,
+          droppableContainers: args.droppableContainers.filter(container => {
+            return container.id !== overId && intersectColumn?.cardOrderIds?.includes(container.id)
+          })
+        }) [0]?.id
+        // console.log('overId after closestCenter : ', overId)
+      }
+      lastOverId.current = overId
+      return [{ id: overId }]
+    }
+
+    // return the last overId if there is no collision
+    return lastOverId.current ? [{ id: lastOverId.current }] : []
+  }, [activeDragItemType, orderedColumns])
 
   // Move a card between two different columns
   const moveCardBetweenColumns = (
@@ -258,7 +302,8 @@ function BoardContent({ board }) {
   return (
     <DndContext
       sensors={mySensors}
-      collisionDetection={closestCorners}
+      // collisionDetection={closestCorners}
+      collisionDetection={collisionDetectionStrategy}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
