@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 import { mapOrder } from '~/utils/sorts'
+import { generatePlaceholderCard } from '~/utils/formatters'
 
 import {
   DndContext,
@@ -19,7 +20,7 @@ import { arrayMove } from '@dnd-kit/sortable'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import Column from './ListColumns/Column/Column'
 import Cards from './ListColumns/Column/ListCards/Card/Cards'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
@@ -130,6 +131,10 @@ function BoardContent({ board }) {
       if (nextActiveColumn) {
         // delete the dragged card from the active column
         nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
+        // add placeholder card to the active column
+        if (isEmpty(nextActiveColumn.cards)) {
+          nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)]
+        }
         // update the cardOrderIds of the active column
         nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
       }
@@ -145,6 +150,9 @@ function BoardContent({ board }) {
         }
         // insert the dragged card into the over column at the new index
         nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, rebuild_activeDraggingCardData)
+
+        // delete the placeholder card from the over column if it exists
+        nextOverColumn.cards = nextOverColumn.cards.filter(card => !card.FE_PlaceholderCard)
 
         // update the cardOrderIds of the over column
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
