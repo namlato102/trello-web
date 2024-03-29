@@ -12,9 +12,7 @@ import {
   MouseSensor,
   TouchSensor,
   closestCorners,
-  closestCenter,
   pointerWithin,
-  rectIntersection,
   getFirstCollision
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
@@ -76,18 +74,18 @@ function BoardContent({ board }) {
 
     // find collision between pointer and intersection
     const pointerIntersections = pointerWithin(args)
-    // return an array of intersections if there are any
-    const intersections = !!pointerIntersections?.length
-      ? pointerIntersections
-      : rectIntersection(args)
 
-    let overId = getFirstCollision(intersections, 'id')
+    // if there is no collision, do nothing just drag the card
+    if (!pointerIntersections?.length) return
+
+    // find the first collision
+    let overId = getFirstCollision(pointerIntersections, 'id')
 
     if (overId) {
       const intersectColumn = orderedColumns.find(column => column._id === overId)
       if (intersectColumn) {
         // console.log('overId before closestCenter: ', overId)
-        overId = closestCenter({
+        overId = closestCorners({
           ...args,
           droppableContainers: args.droppableContainers.filter(container => {
             return container.id !== overId && intersectColumn?.cardOrderIds?.includes(container.id)
