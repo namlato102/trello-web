@@ -47,12 +47,14 @@ function BoardBar(props) {
     }}>
       <Box sx={{ display:'flex', alignItems:'center', gap: 1 }}>
         {/* Dashboard */}
-        <Chip
-          icon={<DashboardIcon />}
-          label={board?.title}
-          clickable
-          sx={MENU_STYLE}
-        />
+        <Tooltip title={board?.description}>
+          <Chip
+            icon={<DashboardIcon />}
+            label={board?.title}
+            clickable
+            sx={MENU_STYLE}
+          />
+        </Tooltip>
 
         {/* Board privacy */}
         <Chip
