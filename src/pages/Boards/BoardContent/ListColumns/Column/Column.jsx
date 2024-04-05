@@ -25,6 +25,7 @@ import { CSS } from '@dnd-kit/utilities'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import InputAdornment from '@mui/material/InputAdornment'
+import { toast } from 'react-toastify'
 
 function Column({ column }) {
   const {
@@ -63,6 +64,7 @@ function Column({ column }) {
   // react hook form
   const addNewCard = () => {
     if (!newCardTitle) {
+      toast.error('Please enter card title')
       return
     }
     // call api to add new column
