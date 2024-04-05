@@ -26,14 +26,7 @@ const MENU_STYLE = {
   }
 }
 
-function BoardBar(props) {
-  /**
-   * Renders the BoardBar component.
-   *
-   * @param {Object} props - The props for the BoardBar component.
-   * @param {Object} props.board - The board object.
-   */
-  const { board } = props
+function BoardBar({ board }) {
   return (
     <Box px={1} sx={{
       width: '100%',

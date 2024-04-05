@@ -48,7 +48,6 @@ function Column({ column }) {
     // touchAction: 'none'
   }
 
-  // const { column } = props
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
