@@ -10,12 +10,13 @@ import {
   // PointerSensor,
   useSensor,
   useSensors,
-  MouseSensor,
-  TouchSensor,
+  // MouseSensor,
+  // TouchSensor,
   closestCorners,
   pointerWithin,
   getFirstCollision
 } from '@dnd-kit/core'
+import { MouseSensor, TouchSensor } from '~/customLibraries/DndKitSensor'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import Column from './ListColumns/Column/Column'
