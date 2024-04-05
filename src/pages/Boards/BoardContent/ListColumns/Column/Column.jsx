@@ -199,6 +199,7 @@ function Column({ column }) {
                 size='small'
                 varient='outlined'
                 autoFocus
+                data-no-dnd="true"
                 value={newCardTitle}
                 onChange={(e) => setNewCardTitle(e.target.value)}
                 InputProps={{
@@ -243,6 +244,7 @@ function Column({ column }) {
                   variant='contained'
                   color='success'
                   size='small'
+                  data-no-dnd="true"
                   sx={{
                     boxShadow: 'none',
                     border: '0.5px solid',
