@@ -9,7 +9,6 @@ import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortabl
 import InputAdornment from '@mui/material/InputAdornment'
 
 function ListColumns({ columns }) {
-  // const { columns } = props
   const [openNewColumn, setOpenNewColumn] = useState(false)
   const toggleOpenNewColumn = () => setOpenNewColumn(!openNewColumn)
 

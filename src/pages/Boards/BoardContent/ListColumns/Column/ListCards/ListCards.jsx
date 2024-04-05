@@ -4,7 +4,6 @@ import Cards from './Card/Cards'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 
 function ListCards({ cards }) {
-  // const { cards } = props
   return (
     <SortableContext items={cards?.map(c => c._id)} strategy={verticalListSortingStrategy}>
       <Box sx={{

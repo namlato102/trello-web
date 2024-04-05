@@ -29,7 +29,7 @@ function Cards({ card }) {
     opacity: isDragging ? 0.5 : undefined,
     border: isDragging ? '1px solid #3498db' : undefined
   }
-  // const { card } = props
+
   /**
    * Determines whether to show card actions based on the presence of memberIds, comments, or attachments.
    * @returns {boolean} True if any of the card actions should be shown, false otherwise.
@@ -37,6 +37,7 @@ function Cards({ card }) {
   const shouldShowCardActions = () => {
     return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
   }
+
   return (
     <Card
       ref={setNodeRef} style={dndKitCardStyles} {...attributes} {...listeners}
