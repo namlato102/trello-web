@@ -9,19 +9,27 @@ import CloseIcon from '@mui/icons-material/Close'
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 import InputAdornment from '@mui/material/InputAdornment'
 
-function ListColumns({ columns }) {
+function ListColumns({ columns, createNewColumn, createNewCard }) {
   const [openNewColumn, setOpenNewColumn] = useState(false)
   const toggleOpenNewColumn = () => setOpenNewColumn(!openNewColumn)
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
 
   // react hook form
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('Please enter column title')
       return
     }
-    // call api to add new column
+
+    // create new column data to send to API
+    const newColumnData = {
+      title: newColumnTitle
+    }
+
+    // call function props createNewColumn from boards/_id.jsx
+    // use redux global store to store board state instead of local state
+    await createNewColumn(newColumnData)
 
     // console.log('Add new column with title:', newColumnTitle)
     // close state and clear input
@@ -44,7 +52,7 @@ function ListColumns({ columns }) {
         }
       }}>
         {columns?.map((column) => {
-          return (<Column key={column._id} column={column} />)
+          return (<Column key={column._id} column={column} createNewCard={createNewCard} />)
         })}
 
         {/* Button Add new Column */}

@@ -27,7 +27,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import InputAdornment from '@mui/material/InputAdornment'
 import { toast } from 'react-toastify'
 
-function Column({ column }) {
+function Column({ column, createNewCard }) {
   const {
     attributes,
     listeners,
@@ -62,12 +62,21 @@ function Column({ column }) {
   const [newCardTitle, setNewCardTitle] = useState('')
 
   // react hook form
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter card title')
       return
     }
-    // call api to add new column
+
+    // create new card data to send to API
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+
+    // call function props createNewColumn from boards/_id.jsx
+    // use redux global store to store board state instead of local state
+    await createNewCard(newCardData)
 
     // console.log('Add new column with title:', newColumnTitle)
     // close state and clear input

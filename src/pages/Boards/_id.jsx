@@ -4,7 +4,9 @@ import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 // import { mockData } from '~/apis/mockData'
-import { fetchBoardDetailsAPI } from '~/apis'
+import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI } from '~/apis'
+import { generatePlaceholderCard } from '~/utils/formatters'
+import { isEmpty } from 'lodash'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -14,9 +16,53 @@ function Board() {
     const boardId = '660abc0ca0f6a402d723bfdc'
     // call api to get board details
     fetchBoardDetailsAPI(boardId).then((boardDetail) => {
+      // generate placeholder card for each column if existed column has no card
+      boardDetail.columns.forEach((column) => {
+        if (isEmpty(column.cards)) {
+          column.cards = [generatePlaceholderCard(column)]
+          column.cardOrderIds = [generatePlaceholderCard(column)._id]
+        }
+      })
+      // console.log(boardDetail)
       setBoard(boardDetail)
     })
   }, [])
+
+  // call api to create new column and refresh board state
+  const createNewColumn = async (newColumnData) => {
+    // call api to create new column
+    const createdColumn = await createNewColumnAPI({
+      ...newColumnData,
+      boardId: board._id
+    })
+
+    // generate placeholder card when create new column
+    createdColumn.cards = [generatePlaceholderCard(createdColumn)]
+    createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
+
+    // then refresh board state from useState() instead call api again (by reload page)
+    const newBoard = { ...board }
+    newBoard.columns.push(createdColumn)
+    newBoard.columnOrderIds.push(createdColumn._id)
+    setBoard(newBoard)
+  }
+
+  // call api to create new card and refresh board state
+  const createNewCard = async (newCardData) => {
+    // call api to create new column
+    const createdCard = await createNewCardAPI({
+      ...newCardData,
+      boardId: board._id
+    })
+    // then refresh board state from useState() instead call api again (by reload page)
+    const newBoard = { ...board }
+    const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
+    if (columnToUpdate) {
+      columnToUpdate.cards.push(createdCard)
+      columnToUpdate.cardOrderIds.push(createdCard._id)
+    }
+    setBoard(newBoard)
+  }
 
   return (
     <>
@@ -30,7 +76,11 @@ function Board() {
 
         {/* Board Content */}
         {/* <BoardContent board={mockData?.board} /> */}
-        <BoardContent board={board} />
+        <BoardContent
+          board={board}
+          createNewColumn={createNewColumn}
+          createNewCard={createNewCard}
+        />
       </Container>
     </>
   )
