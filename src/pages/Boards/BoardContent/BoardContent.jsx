@@ -28,7 +28,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
   /**
    * Renders the content of a board.
    * Destructuring assignment:
@@ -278,12 +278,9 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
         // Move the dragged column to the new index
         const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
 
-        // xu ly du lieu de luu vao db khi goi api
-        // const dndOrderedColumnIds = dndOrderedColumns.map(c => c._id)
-        // console.log('dndOrderedColumns', dndOrderedColumns)
-        // console.log('dndOrderedColumnIds', dndOrderedColumnIds)
+        moveColumns(dndOrderedColumns)
 
-        // update state
+        // update state after drag column to avoid delay when calling api
         setOrderedColumns(dndOrderedColumns)
       }
     }
