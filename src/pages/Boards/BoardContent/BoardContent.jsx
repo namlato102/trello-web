@@ -28,7 +28,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board }) {
+function BoardContent({ board, createNewColumn, createNewCard }) {
   /**
    * Renders the content of a board.
    * Destructuring assignment:
@@ -321,7 +321,11 @@ function BoardContent({ board }) {
         height: (theme) => theme.trello.boardContentHeight,
         p: '10px 0'
       }}>
-        <ListColumns columns={orderedColumns} />
+        <ListColumns
+          columns={orderedColumns}
+          createNewColumn={createNewColumn}
+          createNewCard={createNewCard}
+        />
         <DragOverlay dropAnimation={dropAnimation}>
           {/* If activeDragItemType is falsy (e.g., null, undefined, false, 0, NaN, or an empty string), render nothing.
             * If activeDragItemType is truthy and its value is equal to ACTIVE_DRAG_ITEM_TYPE.COLUMN,
