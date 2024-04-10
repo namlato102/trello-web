@@ -278,10 +278,10 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
         // Move the dragged column to the new index
         const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
 
-        moveColumns(dndOrderedColumns)
-
         // update state after drag column to avoid delay when calling api
         setOrderedColumns(dndOrderedColumns)
+
+        moveColumns(dndOrderedColumns)
       }
     }
 

@@ -65,7 +65,7 @@ function Board() {
   }
 
   // call api to move columns and refresh board state
-  const moveColumns = async (dndOrderedColumns) => {
+  const moveColumns = (dndOrderedColumns) => {
     // update state for columnOrderIds
     const dndOrderedColumnIds = dndOrderedColumns.map(c => c._id)
     const newBoard = { ...board }
@@ -74,7 +74,7 @@ function Board() {
     setBoard(newBoard)
 
     // call api to update columnOrderIds
-    await updateBoardDetailsAPI(newBoard._id, { columnOrderIds: newBoard.columnOrderIds })
+    updateBoardDetailsAPI(newBoard._id, { columnOrderIds: newBoard.columnOrderIds })
   }
 
   return (
