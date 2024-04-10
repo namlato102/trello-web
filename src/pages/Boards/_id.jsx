@@ -4,7 +4,7 @@ import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 // import { mockData } from '~/apis/mockData'
-import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI, updateBoardDetailsAPI, updateColumnDetailsAPI } from '~/apis'
+import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI, updateBoardDetailsAPI, updateColumnDetailsAPI, moveCardToDifferentColumnAPI } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 import { mapOrder } from '~/utils/sorts'
@@ -101,6 +101,25 @@ function Board() {
     // call api to update cardOrderIds
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardsIds })
   }
+  // update cardOrderIds of old column and new column when moving card to different column by delete card
+  // update cardOrderIds of new column by add card
+  // update columnId of dragged card
+  const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
+    // update state for columnOrderIds
+    const dndOrderedColumnIds = dndOrderedColumns.map(c => c._id)
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumns
+    newBoard.columnOrderIds = dndOrderedColumnIds
+    setBoard(newBoard)
+
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      prevCardOrderIds: dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
+    })
+  }
 
   if (!board) {
     return (
@@ -136,6 +155,7 @@ function Board() {
           createNewCard={createNewCard}
           moveColumns={moveColumns}
           moveCardInTheSameColumn={moveCardInTheSameColumn}
+          moveCardToDifferentColumn={moveCardToDifferentColumn}
         />
       </Container>
     </>
