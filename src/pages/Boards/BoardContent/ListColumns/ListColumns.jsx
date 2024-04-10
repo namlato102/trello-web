@@ -16,7 +16,7 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
   const [newColumnTitle, setNewColumnTitle] = useState('')
 
   // react hook form
-  const addNewColumn = async () => {
+  const addNewColumn = () => {
     if (!newColumnTitle) {
       toast.error('Please enter column title')
       return
@@ -29,7 +29,7 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
 
     // call function props createNewColumn from boards/_id.jsx
     // use redux global store to store board state instead of local state
-    await createNewColumn(newColumnData)
+    createNewColumn(newColumnData)
 
     // console.log('Add new column with title:', newColumnTitle)
     // close state and clear input

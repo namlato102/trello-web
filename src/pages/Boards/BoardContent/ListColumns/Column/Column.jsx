@@ -17,7 +17,6 @@ import AddCardIcon from '@mui/icons-material/AddCard'
 import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCards from './ListCards/ListCards'
-import { mapOrder } from '~/utils/sorts'
 
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -49,7 +48,8 @@ function Column({ column, createNewCard }) {
     // touchAction: 'none'
   }
 
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  // cards are sorted by cardOrderIds in _id.jsx
+  const orderedCards = column.cards
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {setAnchorEl(event.currentTarget)}
@@ -62,7 +62,7 @@ function Column({ column, createNewCard }) {
   const [newCardTitle, setNewCardTitle] = useState('')
 
   // react hook form
-  const addNewCard = async () => {
+  const addNewCard = () => {
     if (!newCardTitle) {
       toast.error('Please enter card title')
       return
@@ -76,7 +76,7 @@ function Column({ column, createNewCard }) {
 
     // call function props createNewColumn from boards/_id.jsx
     // use redux global store to store board state instead of local state
-    await createNewCard(newCardData)
+    createNewCard(newCardData)
 
     // console.log('Add new column with title:', newColumnTitle)
     // close state and clear input
