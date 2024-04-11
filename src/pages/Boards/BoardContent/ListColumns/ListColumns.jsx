@@ -9,7 +9,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 import InputAdornment from '@mui/material/InputAdornment'
 
-function ListColumns({ columns, createNewColumn, createNewCard }) {
+function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDetails }) {
   const [openNewColumn, setOpenNewColumn] = useState(false)
   const toggleOpenNewColumn = () => setOpenNewColumn(!openNewColumn)
 
@@ -52,7 +52,12 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
         }
       }}>
         {columns?.map((column) => {
-          return (<Column key={column._id} column={column} createNewCard={createNewCard} />)
+          return (<Column
+            key={column._id}
+            column={column}
+            createNewCard={createNewCard}
+            deleteColumnDetails={deleteColumnDetails}
+          />)
         })}
 
         {/* Button Add new Column */}
