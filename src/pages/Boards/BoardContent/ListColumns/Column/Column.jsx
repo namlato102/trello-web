@@ -8,11 +8,11 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import Tooltip from '@mui/material/Tooltip'
-import ContentCut from '@mui/icons-material/ContentCut'
+// import ContentCut from '@mui/icons-material/ContentCut'
 import DeleteIcon from '@mui/icons-material/Delete'
-import Cloud from '@mui/icons-material/Cloud'
-import ContentCopy from '@mui/icons-material/ContentCopy'
-import ContentPaste from '@mui/icons-material/ContentPaste'
+// import Cloud from '@mui/icons-material/Cloud'
+// import ContentCopy from '@mui/icons-material/ContentCopy'
+// import ContentPaste from '@mui/icons-material/ContentPaste'
 import AddCardIcon from '@mui/icons-material/AddCard'
 import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
@@ -26,7 +26,9 @@ import CloseIcon from '@mui/icons-material/Close'
 import InputAdornment from '@mui/material/InputAdornment'
 import { toast } from 'react-toastify'
 
-function Column({ column, createNewCard }) {
+import { useConfirm } from 'material-ui-confirm'
+
+function Column({ column, createNewCard, deleteColumnDetails }) {
   const {
     attributes,
     listeners,
@@ -84,6 +86,30 @@ function Column({ column, createNewCard }) {
     setNewCardTitle('')
   }
 
+  // delete column and cards in it
+  const confirmDeleteColumn = useConfirm()
+  const handleDeleteColumn = () => {
+    // console.log('Delete column:', column.title)
+    confirmDeleteColumn({
+      title: 'Delete Column?',
+      // description: 'This action will permanently delete your Column and its Cards! Are you sure?',
+      confirmationText: 'Yes, delete it!',
+      cancellationText: 'No, keep it',
+      // dialogProps: { maxWidth: 'xs' },
+      // confirmationButtonProps: { color: 'error' },
+      // cancellationButtonProps: { color: 'primary', variant: 'contained' },
+      // allowClose: false,
+      description: `Enter "${column.title}" to delete this column! Are you sure?`,
+      confirmationKeyword: `${column.title}`
+    })
+      .then(() => {
+        deleteColumnDetails(column._id)
+      })
+      .catch(() => {
+        /* ... */
+      })
+  }
+
   return (
     // using div instead of Box to avoid flickering when dragging
     <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
@@ -133,46 +159,67 @@ function Column({ column, createNewCard }) {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               MenuListProps={{
                 'aria-labelledby': 'basic-column-dropdown'
               }}
             >
-              <MenuItem>
+              <MenuItem
+                onClick={toggleOpenNewCard}
+                sx={{
+                  '&:hover': {
+                    color: 'success.light',
+                    '& .add-card-icon': {
+                      color: 'success.light'
+                    }
+                  }
+                }}
+              >
                 <ListItemIcon>
-                  <AddCardIcon fontSize="small" />
+                  <AddCardIcon className="add-card-icon" fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Add new Card</ListItemText>
               </MenuItem>
-              <MenuItem>
+              {/* <MenuItem>
                 <ListItemIcon>
                   <ContentCut fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Cut</ListItemText>
-              </MenuItem>
-              <MenuItem>
+              </MenuItem> */}
+              {/* <MenuItem>
                 <ListItemIcon>
                   <ContentCopy fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Copy</ListItemText>
-              </MenuItem>
-              <MenuItem>
+              </MenuItem> */}
+              {/* <MenuItem>
                 <ListItemIcon>
                   <ContentPaste fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Paste</ListItemText>
-              </MenuItem>
+              </MenuItem> */}
               <Divider />
-              <MenuItem>
+              {/* <MenuItem>
                 <ListItemIcon>
                   <Cloud fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Save</ListItemText>
-              </MenuItem>
-              <MenuItem>
+              </MenuItem> */}
+              <MenuItem
+                onClick={handleDeleteColumn}
+                sx={{
+                  '&:hover': {
+                    color: 'warning.dark',
+                    '& .delete-forever-icon': {
+                      color: 'warning.dark'
+                    }
+                  }
+                }}
+              >
                 <ListItemIcon>
-                  <DeleteIcon fontSize="small" />
+                  <DeleteIcon className="delete-forever-icon" fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Remove</ListItemText>
+                <ListItemText>Delete</ListItemText>
               </MenuItem>
             </Menu>
           </Box>
