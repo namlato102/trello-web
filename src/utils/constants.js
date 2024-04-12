@@ -1,3 +1,12 @@
+
 // api endpoints
-// export const API_URL = 'http://localhost:8017'
-export const API_URL = 'https://trello-api-7mit.onrender.com'
+let apiRoot = ''
+if (import.meta.env.DEV) {
+  apiRoot = 'http://localhost:8017'
+}
+
+if (import.meta.env.PROD) {
+  apiRoot = 'https://trello-api-7mit.onrender.com'
+}
+
+export const API_URL = apiRoot
