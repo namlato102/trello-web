@@ -1,12 +1,13 @@
-import Button from '@mui/material/Button'
+import Board from '~/pages/Boards/_id'
+
 
 function App() {
-
   return (
     <>
-      <Button variant="text">Text</Button>
-      <Button variant="contained">Contained</Button>
-      <Button variant="outlined">Outlined</Button>
+      {/*  React Router Dom /boards/{board_id} */}
+
+      {/* Board Details */}
+      <Board />
     </>
   )
 }
