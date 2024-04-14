@@ -1,5 +1,6 @@
 import Board from '~/pages/Boards/_id'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Auth from './pages/Auth'
 
 
 function App() {
@@ -8,6 +9,8 @@ function App() {
       {/*  React Router Dom /boards/{board_id} */}
       <div>
         <Routes>
+          {/* AUthentication page */}
+          <Route path="/auth" element={<Auth />} />
           {/* Board Details */}
           <Route path="/boards" element={<Board />} />
           {/* <Route path="/about" element={<About />} /> */}
