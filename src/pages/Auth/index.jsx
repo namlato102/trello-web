@@ -7,8 +7,12 @@ import InputAdornment from '@mui/material/InputAdornment'
 import { useState } from 'react'
 
 function Auth() {
-  const [userNameValue, setUserNameValue] = useState()
-  const [passwordValue, setPasswordValue] = useState()
+  const [userNameValue, setUserNameValue] = useState('')
+  const [passwordValue, setPasswordValue] = useState('')
+
+  const sendLoginRequest = () => {
+    console.log('Login with:', userNameValue, passwordValue)
+  }
   return (
     <Box
       sx={{
@@ -107,6 +111,7 @@ function Auth() {
         />
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Button
+            onClick={() => sendLoginRequest()}
             variant='contained'
             color='success'
             size='small'

@@ -22,7 +22,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 
 function AppBar() {
-  const [searchValue, setSearchValue] = useState()
+  const [searchValue, setSearchValue] = useState('')
   return (
     <Box px={1} sx={{
       width: '100%',
