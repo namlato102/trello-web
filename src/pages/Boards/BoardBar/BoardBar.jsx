@@ -117,7 +117,7 @@ function BoardBar({ board }) {
           }}
         >
           <Tooltip title="Remy Sharp">
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg"/>
           </Tooltip>
           <Tooltip title="Travis Howard">
             <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
