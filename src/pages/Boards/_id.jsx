@@ -4,7 +4,14 @@ import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 // import { mockData } from '~/apis/mockData'
-import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI, updateBoardDetailsAPI, updateColumnDetailsAPI, moveCardToDifferentColumnAPI, deleteColumnDetailsAPI } from '~/apis'
+import {
+  // fetchBoardDetailsAPI,
+  createNewColumnAPI,
+  createNewCardAPI, updateBoardDetailsAPI,
+  updateColumnDetailsAPI,
+  moveCardToDifferentColumnAPI,
+  deleteColumnDetailsAPI,
+} from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 import { mapOrder } from '~/utils/sorts'
@@ -12,32 +19,26 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 import { toast } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  fetchBoardDetailsAPI,
+  updateCurrentActiveBoard,
+  selectCurrentActiveBoard
+} from '~/redux/activeBoardSlice/activeBoardSlice'
 
 function Board() {
-  const [board, setBoard] = useState(null)
+  // const [board, setBoard] = useState(null)
+  // Không dùng State của component nữa mà chuyển qua dùng State của Redux
+  // const [board, setBoard] = useState(null)
+  const board = useSelector(selectCurrentActiveBoard)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     // use react-router-dom to get the board id
     const boardId = '660abc0ca0f6a402d723bfdc'
-    // call api to get board details
-    fetchBoardDetailsAPI(boardId).then((boardDetail) => {
-      // sort columns and cards by columnOrderIds before set state
-      boardDetail.columns = mapOrder(boardDetail.columns, boardDetail.columnOrderIds, '_id')
-
-      // generate placeholder card for each column if existed column has no card
-      boardDetail.columns.forEach((column) => {
-        if (isEmpty(column.cards)) {
-          column.cards = [generatePlaceholderCard(column)]
-          column.cardOrderIds = [generatePlaceholderCard(column)._id]
-        } else {
-          // sort cards by cardOrderIds
-          column.cards = mapOrder(column.cards, column.cardOrderIds, '_id')
-        }
-      })
-      // console.log(boardDetail)
-      setBoard(boardDetail)
-    })
-  }, [])
+    // call api to get board details from redux
+    dispatch(fetchBoardDetailsAPI(boardId))
+  }, [dispatch])
 
   // call api to create new column and refresh board state
   const createNewColumn = async (newColumnData) => {
@@ -55,7 +56,8 @@ function Board() {
     const newBoard = { ...board }
     newBoard.columns.push(createdColumn)
     newBoard.columnOrderIds.push(createdColumn._id)
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
   }
 
   // call api to create new card and refresh board state
@@ -80,7 +82,8 @@ function Board() {
         columnToUpdate.cardOrderIds.push(createdCard._id)
       }
     }
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
   }
 
   // call api to update columnOrderIds when moving column
@@ -90,7 +93,8 @@ function Board() {
     const newBoard = { ...board }
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnIds
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     // call api to update columnOrderIds
     updateBoardDetailsAPI(newBoard._id, { columnOrderIds: newBoard.columnOrderIds })
@@ -105,7 +109,8 @@ function Board() {
       columnToUpdate.cards = dndOrderedCards
       columnToUpdate.cardOrderIds = dndOrderedCardsIds
     }
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     // call api to update cardOrderIds
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardsIds })
@@ -119,7 +124,8 @@ function Board() {
     const newBoard = { ...board }
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnIds
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     // if column (where the last card got dragged from) has placeholder card, set cardOrderIds of column to empty array before call api
     let prevCardOrderIds = dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds
@@ -143,7 +149,8 @@ function Board() {
     const newBoard = { ...board }
     newBoard.columns = newBoard.columns.filter(column => column._id !== columnId)
     newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     // call api to delete column
     deleteColumnDetailsAPI(columnId).then(res => {
