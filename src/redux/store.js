@@ -1,5 +1,5 @@
 // Redux: State management tool
-import { activeBoardReducer } from './activeBoardSlice/activeBoardSlice'
+import { activeBoardReducer } from './activeBoard/activeBoardSlice'
 import { configureStore } from '@reduxjs/toolkit'
 
 export const store = configureStore({

@@ -8,11 +8,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import Tooltip from '@mui/material/Tooltip'
-// import ContentCut from '@mui/icons-material/ContentCut'
 import DeleteIcon from '@mui/icons-material/Delete'
-// import Cloud from '@mui/icons-material/Cloud'
-// import ContentCopy from '@mui/icons-material/ContentCopy'
-// import ContentPaste from '@mui/icons-material/ContentPaste'
 import AddCardIcon from '@mui/icons-material/AddCard'
 import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
@@ -28,7 +24,15 @@ import { toast } from 'react-toastify'
 
 import { useConfirm } from 'material-ui-confirm'
 
-function Column({ column, createNewCard, deleteColumnDetails }) {
+import { createNewCardAPI, deleteColumnDetailsAPI } from '~/apis'
+import { cloneDeep } from 'lodash'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  updateCurrentActiveBoard,
+  selectCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
+
+function Column({ column }) {
   const {
     attributes,
     listeners,
@@ -63,8 +67,12 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
 
   const [newCardTitle, setNewCardTitle] = useState('')
 
+  // use selector to get board from redux and dispatch to call action instead of react useState
+  const board = useSelector(selectCurrentActiveBoard)
+  const dispatch = useDispatch()
+
   // react hook form
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter card title')
       return
@@ -76,11 +84,30 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       columnId: column._id
     }
 
-    // call function props createNewColumn from boards/_id.jsx
-    // use redux global store to store board state instead of local state
-    createNewCard(newCardData)
+    // use redux global store to store board state instead of call props function
+    // call and wait for api to create new card
+    const createdCard = await createNewCardAPI({
+      ...newCardData,
+      boardId: board._id
+    })
+    // then refresh board state from useState() instead call api again (by reload page)
+    const newBoard = cloneDeep(board)
+    const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
+    if (columnToUpdate) {
 
-    // console.log('Add new column with title:', newColumnTitle)
+      // if column has placeholder card, replace it with new card
+      if (columnToUpdate.cards.some(card => card.FE_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        // if column has card, add new card to the end of cards array
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
+    }
+
+    dispatch(updateCurrentActiveBoard(newBoard))
+
     // close state and clear input
     toggleOpenNewCard()
     setNewCardTitle('')
@@ -103,7 +130,18 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       confirmationKeyword: `${column.title}`
     })
       .then(() => {
-        deleteColumnDetails(column._id)
+        // update state board
+        const newBoard = cloneDeep(board)
+        newBoard.columns = newBoard.columns.filter(c => c._id !== column._id)
+        newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== column._id)
+        // setBoard(newBoard)
+        dispatch(updateCurrentActiveBoard(newBoard))
+
+        // call api to delete column
+        deleteColumnDetailsAPI(column._id).then(res => {
+          // show toast notification from BE response
+          toast.success(res?.deleteResult)
+        })
       })
       .catch(() => {
         /* ... */

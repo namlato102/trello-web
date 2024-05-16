@@ -8,15 +8,27 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 import InputAdornment from '@mui/material/InputAdornment'
+import { createNewColumnAPI } from '~/apis'
+import { generatePlaceholderCard } from '~/utils/formatters'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  updateCurrentActiveBoard,
+  selectCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
+import { cloneDeep } from 'lodash'
 
-function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDetails }) {
+function ListColumns({ columns }) {
   const [openNewColumn, setOpenNewColumn] = useState(false)
   const toggleOpenNewColumn = () => setOpenNewColumn(!openNewColumn)
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
 
+  // use selector to get board from redux and dispatch to call action instead of react useState
+  const board = useSelector(selectCurrentActiveBoard)
+  const dispatch = useDispatch()
+
   // react hook form
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('Please enter column title')
       return
@@ -27,11 +39,33 @@ function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDeta
       title: newColumnTitle
     }
 
-    // call function props createNewColumn from boards/_id.jsx
-    // use redux global store to store board state instead of local state
-    createNewColumn(newColumnData)
+    // use redux global store to store board state instead of call props function
+    // call and wait for api to create new column
+    const createdColumn = await createNewColumnAPI({
+      ...newColumnData,
+      boardId: board._id
+    })
 
-    // console.log('Add new column with title:', newColumnTitle)
+    // generate placeholder card when create new column
+    createdColumn.cards = [generatePlaceholderCard(createdColumn)]
+    createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
+
+    // then refresh board state from useState() instead call api again (by reload page)
+    /**
+      * Đoạn này khi chỉnh sửa giá trị lấy từ redux ngoài component sẽ dính lỗi object is not extensible
+      * bởi dù đã copy/clone ra giá trị newBoard nhưng bản chất của spread operator là Shallow Copy/Clone,
+      * nên dính phải rules Immutability trong Redux Toolkit không dùng được hàm PUSH (sửa giá trị mảng trực tiếp),
+      * => dùng Deep Copy/Clone toàn bộ cái Board.
+      * https://redux-toolkit.js.org/usage/immer-reducers
+      * Tài liệu thêm về Shallow và Deep Copy Object trong JS:
+      * https://www.javascripttutorial.net/object/3-ways-to-copy-objects-in-javascript/
+      */
+    const newBoard = cloneDeep(board)
+    newBoard.columns.push(createdColumn)
+    newBoard.columnOrderIds.push(createdColumn._id)
+
+    dispatch(updateCurrentActiveBoard(newBoard))
+
     // close state and clear input
     toggleOpenNewColumn()
     setNewColumnTitle('')
@@ -52,12 +86,7 @@ function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDeta
         }
       }}>
         {columns?.map((column) => {
-          return (<Column
-            key={column._id}
-            column={column}
-            createNewCard={createNewCard}
-            deleteColumnDetails={deleteColumnDetails}
-          />)
+          return (<Column key={column._id} column={column}/>)
         })}
 
         {/* Button Add new Column */}
