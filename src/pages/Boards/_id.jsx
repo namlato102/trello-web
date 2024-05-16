@@ -5,29 +5,23 @@ import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 // import { mockData } from '~/apis/mockData'
 import {
-  createNewColumnAPI,
-  createNewCardAPI, updateBoardDetailsAPI,
+  updateBoardDetailsAPI,
   updateColumnDetailsAPI,
-  moveCardToDifferentColumnAPI,
-  deleteColumnDetailsAPI
+  moveCardToDifferentColumnAPI
 } from '~/apis'
-import { generatePlaceholderCard } from '~/utils/formatters'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
-import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   fetchBoardDetailsAPI,
   updateCurrentActiveBoard,
   selectCurrentActiveBoard
-} from '~/redux/activeBoardSlice/activeBoardSlice'
+} from '~/redux/activeBoard/activeBoardSlice'
 import { cloneDeep } from 'lodash'
 
 function Board() {
-  // const [board, setBoard] = useState(null)
-  // Không dùng State của component nữa mà chuyển qua dùng State của Redux
-  // const [board, setBoard] = useState(null)
+  // use selector to get board from redux and dispatch to call action instead of react useState
   const board = useSelector(selectCurrentActiveBoard)
   const dispatch = useDispatch()
 
@@ -37,61 +31,6 @@ function Board() {
     // call api to get board details from redux
     dispatch(fetchBoardDetailsAPI(boardId))
   }, [dispatch])
-
-  // call api to create new column and refresh board state
-  const createNewColumn = async (newColumnData) => {
-    // call and wait for api to create new column
-    const createdColumn = await createNewColumnAPI({
-      ...newColumnData,
-      boardId: board._id
-    })
-
-    // generate placeholder card when create new column
-    createdColumn.cards = [generatePlaceholderCard(createdColumn)]
-    createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
-
-    // then refresh board state from useState() instead call api again (by reload page)
-    /**
-      * Đoạn này khi chỉnh sửa giá trị lấy từ redux ngoài component sẽ dính lỗi object is not extensible
-      * bởi dù đã copy/clone ra giá trị newBoard nhưng bản chất của spread operator là Shallow Copy/Clone,
-      * nên dính phải rules Immutability trong Redux Toolkit không dùng được hàm PUSH (sửa giá trị mảng trực tiếp),
-      * => dùng Deep Copy/Clone toàn bộ cái Board.
-      * https://redux-toolkit.js.org/usage/immer-reducers
-      * Tài liệu thêm về Shallow và Deep Copy Object trong JS:
-      * https://www.javascripttutorial.net/object/3-ways-to-copy-objects-in-javascript/
-      */
-    const newBoard = cloneDeep(board)
-    newBoard.columns.push(createdColumn)
-    newBoard.columnOrderIds.push(createdColumn._id)
-    // setBoard(newBoard)
-    dispatch(updateCurrentActiveBoard(newBoard))
-  }
-
-  // call api to create new card and refresh board state
-  const createNewCard = async (newCardData) => {
-    // call and wait for api to create new card
-    const createdCard = await createNewCardAPI({
-      ...newCardData,
-      boardId: board._id
-    })
-    // then refresh board state from useState() instead call api again (by reload page)
-    const newBoard = cloneDeep(board)
-    const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
-    if (columnToUpdate) {
-
-      // if column has placeholder card, replace it with new card
-      if (columnToUpdate.cards.some(card => card.FE_PlaceholderCard)) {
-        columnToUpdate.cards = [createdCard]
-        columnToUpdate.cardOrderIds = [createdCard._id]
-      } else {
-        // if column has card, add new card to the end of cards array
-        columnToUpdate.cards.push(createdCard)
-        columnToUpdate.cardOrderIds.push(createdCard._id)
-      }
-    }
-    // setBoard(newBoard)
-    dispatch(updateCurrentActiveBoard(newBoard))
-  }
 
   // call api to update columnOrderIds when moving column
   const moveColumns = (dndOrderedColumns) => {
@@ -150,22 +89,6 @@ function Board() {
     })
   }
 
-  // delete column and its cards
-  const deleteColumnDetails = (columnId) => {
-    // update state board
-    const newBoard = cloneDeep(board)
-    newBoard.columns = newBoard.columns.filter(column => column._id !== columnId)
-    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
-    // setBoard(newBoard)
-    dispatch(updateCurrentActiveBoard(newBoard))
-
-    // call api to delete column
-    deleteColumnDetailsAPI(columnId).then(res => {
-      // show toast notification from BE response
-      toast.success(res?.deleteResult)
-    })
-  }
-
   if (!board) {
     return (
       <Box sx={{
@@ -196,12 +119,13 @@ function Board() {
         {/* <BoardContent board={mockData?.board} /> */}
         <BoardContent
           board={board}
-          createNewColumn={createNewColumn}
-          createNewCard={createNewCard}
+          /**
+           * keep these 3 functions as is to handle drag and drop in BoardContent,
+           * don't move them to BoardContent to keep the code clean and maintainable.
+           */
           moveColumns={moveColumns}
           moveCardInTheSameColumn={moveCardInTheSameColumn}
           moveCardToDifferentColumn={moveCardToDifferentColumn}
-          deleteColumnDetails={deleteColumnDetails}
         />
       </Container>
     </>
