@@ -1,20 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Container from '@mui/material/Container'
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 // import { mockData } from '~/apis/mockData'
 import {
-  // fetchBoardDetailsAPI,
   createNewColumnAPI,
   createNewCardAPI, updateBoardDetailsAPI,
   updateColumnDetailsAPI,
   moveCardToDifferentColumnAPI,
-  deleteColumnDetailsAPI,
+  deleteColumnDetailsAPI
 } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
-import { isEmpty } from 'lodash'
-import { mapOrder } from '~/utils/sorts'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
@@ -25,6 +22,7 @@ import {
   updateCurrentActiveBoard,
   selectCurrentActiveBoard
 } from '~/redux/activeBoardSlice/activeBoardSlice'
+import { cloneDeep } from 'lodash'
 
 function Board() {
   // const [board, setBoard] = useState(null)
@@ -53,7 +51,7 @@ function Board() {
     createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
 
     // then refresh board state from useState() instead call api again (by reload page)
-    const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     newBoard.columns.push(createdColumn)
     newBoard.columnOrderIds.push(createdColumn._id)
     // setBoard(newBoard)
@@ -68,7 +66,7 @@ function Board() {
       boardId: board._id
     })
     // then refresh board state from useState() instead call api again (by reload page)
-    const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
     if (columnToUpdate) {
 
@@ -90,7 +88,7 @@ function Board() {
   const moveColumns = (dndOrderedColumns) => {
     // update state for columnOrderIds
     const dndOrderedColumnIds = dndOrderedColumns.map(c => c._id)
-    const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnIds
     // setBoard(newBoard)
@@ -103,7 +101,7 @@ function Board() {
   // call api to update cardOrderIds when moving card in the same column
   const moveCardInTheSameColumn = (dndOrderedCards, dndOrderedCardsIds, columnId) => {
     // update state board for cardOrderIds
-    const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     const columnToUpdate = newBoard.columns.find(column => column._id === columnId)
     if (columnToUpdate) {
       columnToUpdate.cards = dndOrderedCards
@@ -121,7 +119,7 @@ function Board() {
   const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
     // update state for columnOrderIds
     const dndOrderedColumnIds = dndOrderedColumns.map(c => c._id)
-    const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnIds
     // setBoard(newBoard)
@@ -146,7 +144,7 @@ function Board() {
   // delete column and its cards
   const deleteColumnDetails = (columnId) => {
     // update state board
-    const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
     newBoard.columns = newBoard.columns.filter(column => column._id !== columnId)
     newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
     // setBoard(newBoard)
