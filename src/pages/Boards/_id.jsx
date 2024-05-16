@@ -51,6 +51,15 @@ function Board() {
     createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
 
     // then refresh board state from useState() instead call api again (by reload page)
+    /**
+      * Đoạn này khi chỉnh sửa giá trị lấy từ redux ngoài component sẽ dính lỗi object is not extensible
+      * bởi dù đã copy/clone ra giá trị newBoard nhưng bản chất của spread operator là Shallow Copy/Clone,
+      * nên dính phải rules Immutability trong Redux Toolkit không dùng được hàm PUSH (sửa giá trị mảng trực tiếp),
+      * => dùng Deep Copy/Clone toàn bộ cái Board.
+      * https://redux-toolkit.js.org/usage/immer-reducers
+      * Tài liệu thêm về Shallow và Deep Copy Object trong JS:
+      * https://www.javascripttutorial.net/object/3-ways-to-copy-objects-in-javascript/
+      */
     const newBoard = cloneDeep(board)
     newBoard.columns.push(createdColumn)
     newBoard.columnOrderIds.push(createdColumn._id)
