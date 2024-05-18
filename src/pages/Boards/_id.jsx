@@ -39,7 +39,7 @@ function Board() {
     const newBoard = cloneDeep(board)
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnIds
-    // setBoard(newBoard)
+
     dispatch(updateCurrentActiveBoard(newBoard))
 
     // call api to update columnOrderIds
@@ -55,12 +55,13 @@ function Board() {
       columnToUpdate.cards = dndOrderedCards
       columnToUpdate.cardOrderIds = dndOrderedCardsIds
     }
-    // setBoard(newBoard)
+
     dispatch(updateCurrentActiveBoard(newBoard))
 
     // call api to update cardOrderIds
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardsIds })
   }
+
   // update cardOrderIds of old column and new column when moving card to different column by delete card
   // update cardOrderIds of new column by add card
   // update columnId of dragged card
@@ -70,7 +71,7 @@ function Board() {
     const newBoard = cloneDeep(board)
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnIds
-    // setBoard(newBoard)
+
     dispatch(updateCurrentActiveBoard(newBoard))
 
     // if column (where the last card got dragged from) has placeholder card, set cardOrderIds of column to empty array before call api

@@ -27,18 +27,8 @@ function ListColumns({ columns }) {
   const board = useSelector(selectCurrentActiveBoard)
   const dispatch = useDispatch()
 
-  // react hook form
-  const addNewColumn = async () => {
-    if (!newColumnTitle) {
-      toast.error('Please enter column title')
-      return
-    }
-
-    // create new column data to send to API
-    const newColumnData = {
-      title: newColumnTitle
-    }
-
+  // call api to create new column and refresh board state
+  const createNewColumn = async (newColumnData) => {
     // use redux global store to store board state instead of call props function
     // call and wait for api to create new column
     const createdColumn = await createNewColumnAPI({
@@ -65,6 +55,21 @@ function ListColumns({ columns }) {
     newBoard.columnOrderIds.push(createdColumn._id)
 
     dispatch(updateCurrentActiveBoard(newBoard))
+  }
+
+  // react hook form
+  const addNewColumn = () => {
+    if (!newColumnTitle) {
+      toast.error('Please enter column title')
+      return
+    }
+
+    // create new column data to send to API
+    const newColumnData = {
+      title: newColumnTitle
+    }
+
+    createNewColumn(newColumnData)
 
     // close state and clear input
     toggleOpenNewColumn()

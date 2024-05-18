@@ -71,19 +71,8 @@ function Column({ column }) {
   const board = useSelector(selectCurrentActiveBoard)
   const dispatch = useDispatch()
 
-  // react hook form
-  const addNewCard = async () => {
-    if (!newCardTitle) {
-      toast.error('Please enter card title')
-      return
-    }
-
-    // create new card data to send to API
-    const newCardData = {
-      title: newCardTitle,
-      columnId: column._id
-    }
-
+  // call api to create new card and update board state
+  const createNewCard = async (newCardData) => {
     // use redux global store to store board state instead of call props function
     // call and wait for api to create new card
     const createdCard = await createNewCardAPI({
@@ -107,6 +96,22 @@ function Column({ column }) {
     }
 
     dispatch(updateCurrentActiveBoard(newBoard))
+  }
+
+  // react hook form
+  const addNewCard = () => {
+    if (!newCardTitle) {
+      toast.error('Please enter card title')
+      return
+    }
+
+    // create new card data to send to API
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+
+    createNewCard(newCardData)
 
     // close state and clear input
     toggleOpenNewCard()
@@ -115,33 +120,33 @@ function Column({ column }) {
 
   // delete column and cards in it
   const confirmDeleteColumn = useConfirm()
+
+  // delete column and its cards
+  const deleteColumnDetails = (columnId) => {
+    // update state board
+    const newBoard = cloneDeep(board)
+    newBoard.columns = newBoard.columns.filter(column => column._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
+    dispatch(updateCurrentActiveBoard(newBoard))
+
+    // call api to delete column
+    deleteColumnDetailsAPI(columnId).then(res => {
+      // show toast notification from BE response
+      toast.success(res?.deleteResult)
+    })
+  }
+
   const handleDeleteColumn = () => {
     // console.log('Delete column:', column.title)
     confirmDeleteColumn({
       title: 'Delete Column?',
-      // description: 'This action will permanently delete your Column and its Cards! Are you sure?',
       confirmationText: 'Yes, delete it!',
       cancellationText: 'No, keep it',
-      // dialogProps: { maxWidth: 'xs' },
-      // confirmationButtonProps: { color: 'error' },
-      // cancellationButtonProps: { color: 'primary', variant: 'contained' },
-      // allowClose: false,
       description: `Enter "${column.title}" to delete this column! Are you sure?`,
       confirmationKeyword: `${column.title}`
     })
       .then(() => {
-        // update state board
-        const newBoard = cloneDeep(board)
-        newBoard.columns = newBoard.columns.filter(c => c._id !== column._id)
-        newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== column._id)
-        // setBoard(newBoard)
-        dispatch(updateCurrentActiveBoard(newBoard))
-
-        // call api to delete column
-        deleteColumnDetailsAPI(column._id).then(res => {
-          // show toast notification from BE response
-          toast.success(res?.deleteResult)
-        })
+        deleteColumnDetails(column._id)
       })
       .catch(() => {
         /* ... */
