@@ -58,7 +58,7 @@ function ListColumns({ columns }) {
   }
 
   // react hook form
-  const addNewColumn = async () => {
+  const addNewColumn = () => {
     if (!newColumnTitle) {
       toast.error('Please enter column title')
       return

@@ -99,7 +99,7 @@ function Column({ column }) {
   }
 
   // react hook form
-  const addNewCard = async () => {
+  const addNewCard = () => {
     if (!newCardTitle) {
       toast.error('Please enter card title')
       return
