@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
+import { Card as MuiCard } from '@mui/material'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
@@ -11,7 +11,7 @@ import AttachmentIcon from '@mui/icons-material/Attachment'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
-function Cards({ card }) {
+function Card({ card }) {
   const {
     attributes,
     listeners,
@@ -39,7 +39,7 @@ function Cards({ card }) {
   }
 
   return (
-    <Card
+    <MuiCard
       ref={setNodeRef} style={dndKitCardStyles} {...attributes} {...listeners}
       sx={{
         cursor: 'pointer',
@@ -71,8 +71,8 @@ function Cards({ card }) {
           }
         </CardActions>
       }
-    </Card>
+    </MuiCard>
   )
 }
 
-export default Cards
+export default Card
