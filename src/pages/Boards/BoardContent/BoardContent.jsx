@@ -19,7 +19,7 @@ import { MouseSensor, TouchSensor } from '~/customLibraries/DndKitSensor'
 import { arrayMove } from '@dnd-kit/sortable'
 import { useEffect, useState, useCallback, useRef } from 'react'
 import Column from './ListColumns/Column/Column'
-import Cards from './ListColumns/Column/ListCards/Card/Cards'
+import Card from './ListColumns/Column/ListCards/Card/Card'
 import { cloneDeep, isEmpty } from 'lodash'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
@@ -349,7 +349,7 @@ function BoardContent({
             * */}
           {!activeDragItemType && null}
           {(activeDragItemType && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragItemData} />}
-          {(activeDragItemType && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) && <Cards card={activeDragItemData} />}
+          {(activeDragItemType && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) && <Card card={activeDragItemData} />}
         </DragOverlay>
       </Box>
     </DndContext>
