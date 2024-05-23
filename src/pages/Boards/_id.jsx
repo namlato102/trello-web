@@ -19,18 +19,20 @@ import {
   selectCurrentActiveBoard
 } from '~/redux/activeBoard/activeBoardSlice'
 import { cloneDeep } from 'lodash'
+import { useParams } from 'react-router-dom'
 
 function Board() {
   // use selector to get board from redux and dispatch to call action instead of react useState
   const board = useSelector(selectCurrentActiveBoard)
   const dispatch = useDispatch()
+  const { boardId } = useParams()
 
   useEffect(() => {
     // use react-router-dom to get the board id
-    const boardId = '660abc0ca0f6a402d723bfdc'
+    // const boardId = '660abc0ca0f6a402d723bfdc'
     // call api to get board details from redux
     dispatch(fetchBoardDetailsAPI(boardId))
-  }, [dispatch])
+  }, [dispatch, boardId])
 
   // call api to update columnOrderIds when moving column
   const moveColumns = (dndOrderedColumns) => {
