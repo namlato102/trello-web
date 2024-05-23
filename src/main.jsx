@@ -17,6 +17,7 @@ import { Provider } from 'react-redux'
 import { store } from '~/redux/store'
 
 // Config react-router-dom into project with BrowserRouter
+// https://reactrouter.com/en/main/router-components/browser-router
 import { BrowserRouter } from 'react-router-dom'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
