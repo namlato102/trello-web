@@ -21,6 +21,7 @@ import {
 } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { useSearchParams } from 'react-router-dom'
+import theme from '~/theme'
 
 function LoginForm() {
   const { register, handleSubmit, formState: { errors } } = useForm()
@@ -50,7 +51,15 @@ function LoginForm() {
             <Avatar sx={{ bgcolor: 'primary.main' }}><LockIcon /></Avatar>
             <Avatar sx={{ bgcolor: 'primary.main' }}><TrelloIcon /></Avatar>
           </Box>
-          <Box sx={{ marginTop: '2em', display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '0 1em' }}>
+          <Box sx={{
+            marginTop: '1em',
+            display: 'flex',
+            justifyContent: 'center',
+            color: theme => theme.palette.grey[500]
+          }}>
+            Welcome to MyTrello
+          </Box>
+          <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '0 1em' }}>
             {verifiedEmail &&
               <Alert severity="success" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
                 Your email&nbsp;
