@@ -20,11 +20,16 @@ import {
   EMAIL_RULE_MESSAGE
 } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { loginUserAPI } from '~/redux/user/userSlice'
+import { useDispatch } from 'react-redux'
 
 function LoginForm() {
   const { register, handleSubmit, formState: { errors } } = useForm()
   let [searchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   /**
    * take prarams (registeredEmail and registeredEmail) from URL
@@ -34,7 +39,18 @@ function LoginForm() {
   const { registeredEmail, verifiedEmail } = Object.fromEntries([...searchParams])
 
   const submitLogIn = (data) => {
-    console.log(data)
+    // console.log(data)
+    // destructuring object from data
+    const { email, password } = data
+    toast.promise(
+      dispatch(loginUserAPI({ email, password })),
+      { pending: 'Logging in...' }
+    ).then(res => {
+      // check if there is no error (login successfully) then redirect to route /
+      if (!res.error) {
+        navigate('/')
+      }
+    })
   }
 
   return (
