@@ -21,7 +21,6 @@ import {
 } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { useSearchParams } from 'react-router-dom'
-import theme from '~/theme'
 
 function LoginForm() {
   const { register, handleSubmit, formState: { errors } } = useForm()
