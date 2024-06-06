@@ -33,5 +33,8 @@ const reducers = combineReducers({
 const persistedReducers = persistReducer(rootPersistConfig, reducers)
 
 export const store = configureStore({
-  reducer: persistedReducers
+  reducer: persistedReducers,
+  // Fix warning error when implement redux-persist
+  // https://stackoverflow.com/a/63244831/8324172
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false })
 })
