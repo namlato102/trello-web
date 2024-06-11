@@ -25,6 +25,11 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 const persistor = persistStore(store)
 
+// Use injectStore(store) in the file you want to use store outside of react component
+// https://redux.js.org/faq/code-structure#how-can-i-use-the-redux-store-in-non-component-files
+import { injectStore } from '~/utils/authorizeAxios'
+injectStore(store)
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <PersistGate persistor={persistor}>
