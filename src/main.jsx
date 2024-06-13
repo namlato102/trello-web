@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 // import { ThemeProvider } from '@mui/material/styles'
 import theme from '~/theme'
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles'
+import GlobalStyles from '@mui/material/GlobalStyles'
 
 // config react-toastify
 import { ToastContainer } from 'react-toastify'
@@ -41,6 +42,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             cancellationButtonProps: { color: 'primary', variant: 'contained' },
             allowClose: false
           }}>
+            <GlobalStyles styles={{ a: { textDecoration: 'none' } }} />
             <CssBaseline />
             <App />
             <ToastContainer position='bottom-right' theme='colored' />
