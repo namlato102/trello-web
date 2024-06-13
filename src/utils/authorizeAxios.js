@@ -67,18 +67,17 @@ authorizedAxiosInstance.interceptors.response.use((response) => {
   // https://www.thedutchlab.com/en/insights/using-axios-interceptors-for-refreshing-your-api-token
   const originalRequest = error.config
   // console.log('originalRequest: ', originalRequest)
-  if (error.response?.status === 410 && !originalRequest._retry) {
-    originalRequest._retry = true
-
+  if (error.response?.status === 410 && originalRequest) {
     // If there is no refreshTokenPromise, then call refreshTokenAPI and assign it to refreshTokenPromise
     if (!refreshTokenPromise) {
       refreshTokenPromise = refreshTokenAPI()
         .then(data => {
           return data?.accessToken
         })
-        .catch(() => {
+        .catch((_error) => {
           // If there is any error from refreshTokenAPI, then call logoutUserAPI to logout user
           axiosReduxStore.dispatch(logoutUserAPI(false))
+          return Promise.reject(_error)
         })
         .finally(() => {
           // Even if the refresh_token API is successful or failed, always set the refreshTokenPromise back to null as before
