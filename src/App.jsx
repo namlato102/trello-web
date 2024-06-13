@@ -6,6 +6,7 @@ import Auth from '~/pages/Auth/Auth'
 import AccountVerification from '~/pages/Auth/AccountVerification'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/redux/user/userSlice'
+import Settings from '~/pages/Settings/Settings'
 
 /**
  * Clean Code solution in determining which routes need to be logged in to access
@@ -39,14 +40,18 @@ function App() {
         <Navigate to='/boards/660abc0ca0f6a402d723bfdc' replace={true} />
       } />
 
-      {/* Board Details */}
       <Route element={<ProtectedRoute user={currentUser} />}>
         {/* <Outlet /> của react-router-dom sẽ chạy vào các child route trong này */}
+        {/* Board Details */}
         <Route path='/boards/:boardId' element={<Board />} />
+
+        {/* User settings */}
+        <Route path='/settings/account' element={<Settings />} />
+        <Route path='/settings/security' element={<Settings />} />
       </Route>
 
-      {/* Authentication */}
       <Route element={<UnauthorizedRoute user={currentUser} />}>
+        {/* Authentication */}
         <Route path='/login' element={<Auth />} />
         <Route path='/register' element={<Auth />} />
         <Route path='/account/verification' element={<AccountVerification />} />

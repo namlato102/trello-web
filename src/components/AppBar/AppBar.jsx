@@ -20,6 +20,7 @@ import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
+import { Link } from 'react-router-dom'
 
 function AppBar() {
   const [searchValue, setSearchValue] = useState('')
@@ -36,13 +37,17 @@ function AppBar() {
     }}>
       <Box sx={{ display:'flex', alignItems:'center', gap: 1 }}>
         {/* appMenu */}
-        <AppsIcon sx={{ color: 'white' }}/>
+        <Link to="/">
+          <AppsIcon sx={{ color: 'white' }}/>
+        </Link>
 
         {/* MyTrelloLogo */}
-        <Box sx={{ display:'flex', alignItems:'center', gap: 0.5 }}>
-          <SvgIcon component={trelloLogo} fontSize='small' inheritViewBox sx={{ color: 'white' }}/>
-          <Typography variant="span" sx={{ fontSize:'1.2rem', fontWeight: 'bold', color: 'white' }}>MyTrello</Typography>
-        </Box>
+        <Link to="/">
+          <Box sx={{ display:'flex', alignItems:'center', gap: 0.5 }}>
+            <SvgIcon component={trelloLogo} fontSize='small' inheritViewBox sx={{ color: 'white' }}/>
+            <Typography variant="span" sx={{ fontSize:'1.2rem', fontWeight: 'bold', color: 'white' }}>MyTrello</Typography>
+          </Box>
+        </Link>
 
         <Box sx={{ display: { xs:'none', md: 'flex' } }}>
           {/* Workspaces */}
