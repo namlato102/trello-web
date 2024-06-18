@@ -51,7 +51,11 @@ function Profiles() {
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
         >
-          <Avatar sx={{ width: 32, height: 32 }}/>
+          <Avatar
+            sx={{ width: 32, height: 32 }}
+            alt={currentUser?.username}
+            src={currentUser?.avatar}
+          />
         </IconButton>
       </Tooltip>
       <Menu
