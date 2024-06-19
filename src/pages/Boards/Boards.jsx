@@ -9,8 +9,8 @@ import Grid from '@mui/material/Unstable_Grid2'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard'
-import ListAltIcon from '@mui/icons-material/ListAlt'
-import HomeIcon from '@mui/icons-material/Home'
+// import ListAltIcon from '@mui/icons-material/ListAlt'
+// import HomeIcon from '@mui/icons-material/Home'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -44,17 +44,10 @@ function Boards() {
   const [boards, setBoards] = useState(null)
   const [totalBoards, setTotalBoards] = useState(null)
 
-  // Xử lý phân trang từ url với MUI: https://mui.com/material-ui/react-pagination/#router-integration
+  // Phân trang từ url với MUI: https://mui.com/material-ui/react-pagination/#router-integration
+  // https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/URLSearchParams (search : ?page=1)
   const location = useLocation()
-  /**
-   * Parse chuỗi string search trong location về đối tượng URLSearchParams trong JavaScript
-   * https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/URLSearchParams
-   */
   const query = new URLSearchParams(location.search)
-  /**
-   * Lấy giá trị page từ query, default sẽ là 1 nếu không tồn tại page từ url.
-   * Nhắc lại kiến thức cơ bản hàm parseInt cần tham số thứ 2 là Hệ thập phân (hệ đếm cơ số 10) để đảm bảo chuẩn số cho phân trang
-   */
   const page = parseInt(query.get('page') || '1', 10)
 
   useEffect(() => {
@@ -75,23 +68,28 @@ function Boards() {
 
   return (
     <Container disableGutters maxWidth={false}>
+      {/* App Bar */}
       <AppBar />
+
+      {/* Boards */}
       <Box sx={{ paddingX: 2, my: 4 }}>
+        {/* Boards Content */}
         <Grid container spacing={2}>
+          {/* Nav Bar */}
           <Grid xs={12} sm={3}>
             <Stack direction="column" spacing={1}>
               <SidebarItem className="active">
                 <SpaceDashboardIcon fontSize="small" />
                 Boards
               </SidebarItem>
-              <SidebarItem>
+              {/* <SidebarItem>
                 <ListAltIcon fontSize="small" />
                 Templates
-              </SidebarItem>
-              <SidebarItem>
+              </SidebarItem> */}
+              {/* <SidebarItem>
                 <HomeIcon fontSize="small" />
                 Home
-              </SidebarItem>
+              </SidebarItem> */}
             </Stack>
             <Divider sx={{ my: 1 }} />
             <Stack direction="column" spacing={1}>
@@ -99,6 +97,7 @@ function Boards() {
             </Stack>
           </Grid>
 
+          {/* Your Boards List */}
           <Grid xs={12} sm={9}>
             <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 3 }}>Your boards:</Typography>
 
@@ -129,7 +128,7 @@ function Boards() {
                         </Typography>
                         <Box
                           component={Link}
-                          to={'/boards/6534e1b8a235025a66b644a5'}
+                          to={'/boards/660abc0ca0f6a402d723bfdc'}
                           sx={{
                             mt: 1,
                             display: 'flex',
