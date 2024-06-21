@@ -2,13 +2,17 @@ import authorizedAxiosInstance from '~/utils/authorizeAxios'
 import { API_URL } from '~/utils/constants'
 import { toast } from 'react-toastify'
 
-// CRUD board
+// CRUD boards
 // Đã di chuyển function gọi API này sang bên Redux
 // export const fetchBoardDetailsAPI = async (boardId) => {
 //   const response = await authorizedAxiosInstances.get(`${API_URL}/v1/boards/${boardId}`)
 //   // axios return data in request.data
 //   return response.data
 // }
+export const fetchBoardsAPI = async (searchPath) => {
+  const response = await authorizedAxiosInstance.get(`${API_URL}/v1/boards${searchPath}`)
+  return response.data
+}
 
 export const updateBoardDetailsAPI = async (boardId, updateData) => {
   const response = await authorizedAxiosInstance.put(`${API_URL}/v1/boards/${boardId}`, updateData)
