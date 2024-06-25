@@ -9,6 +9,12 @@ import { toast } from 'react-toastify'
 //   // axios return data in request.data
 //   return response.data
 // }
+export const createNewBoardAPI = async (data) => {
+  const response = await authorizedAxiosInstance.post(`${API_URL}/v1/boards`, data)
+  toast.success('Board created successfully')
+  return response.data
+}
+
 export const fetchBoardsAPI = async (searchPath) => {
   const response = await authorizedAxiosInstance.get(`${API_URL}/v1/boards${searchPath}`)
   return response.data
