@@ -18,6 +18,7 @@ import {
 import { cloneDeep } from 'lodash'
 import { useParams } from 'react-router-dom'
 import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner'
+import ActiveCard from '~/components/Modal/ActiveCard/ActiveCard'
 
 function Board() {
   // use selector to get board from redux and dispatch to call action instead of react useState
@@ -97,6 +98,9 @@ function Board() {
   return (
     <>
       <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
+        {/* Modal Active Card, check đóng/mở dựa theo cái State isShowModalActiveCard lưu trong Redux */}
+        <ActiveCard />
+
         {/* App Bar */}
         <AppBar />
 
