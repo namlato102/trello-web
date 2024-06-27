@@ -10,6 +10,8 @@ import AttachmentIcon from '@mui/icons-material/Attachment'
 
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useDispatch } from 'react-redux'
+import { showModalActiveCard, updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
 
 function Card({ card }) {
   const {
@@ -29,6 +31,7 @@ function Card({ card }) {
     opacity: isDragging ? 0.5 : undefined,
     border: isDragging ? '1px solid #3498db' : undefined
   }
+  const dispatch = useDispatch()
 
   /**
    * Determines whether to show card actions based on the presence of memberIds, comments, or attachments.
@@ -38,8 +41,15 @@ function Card({ card }) {
     return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
   }
 
+  // Function set current active card and show modal edit card
+  const setActiveCard = () => {
+    dispatch(updateCurrentActiveCard(card))
+    dispatch(showModalActiveCard())
+  }
+
   return (
     <MuiCard
+      onClick={setActiveCard}
       ref={setNodeRef} style={dndKitCardStyles} {...attributes} {...listeners}
       sx={{
         cursor: 'pointer',
