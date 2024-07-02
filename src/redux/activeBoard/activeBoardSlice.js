@@ -54,6 +54,9 @@ export const activeBoardSlice = createSlice({
       // get response data from createAsyncThunk action as action.payload
       const board = action.payload
 
+      // Thành viên trong cái board sẽ là gộp lại của 2 mảng owners và members
+      board['FE_allUsers'] = board.owners.concat(board.members)
+
       // sort columns and cards by columnOrderIds before set state
       board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
 

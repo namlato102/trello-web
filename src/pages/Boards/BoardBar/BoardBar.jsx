@@ -98,7 +98,7 @@ function BoardBar({ board }) {
         </Button>
 
         {/* Members */}
-        <BoardUserGroup limit={4}/>
+        <BoardUserGroup boardUsers={board.FE_allUsers} />
       </Box>
     </Box>
   )
