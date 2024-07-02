@@ -6,7 +6,7 @@ import Popover from '@mui/material/Popover'
 
 // Function display a group of users in a board
 // eslint-disable-next-line no-unused-vars
-function BoardUserGroup({ boardUsers = [], limit = 8 }) {
+function BoardUserGroup({ boardUsers = [], limit = 4 }) {
   // https://mui.com/material-ui/react-popover/
   const [anchorPopoverElement, setAnchorPopoverElement] = useState(null)
   const isOpenPopover = Boolean(anchorPopoverElement)
@@ -18,21 +18,22 @@ function BoardUserGroup({ boardUsers = [], limit = 8 }) {
 
   return (
     <Box sx={{ display: 'flex', gap: '4px' }}>
-      {[...Array(16)].map((_, index) => {
+      {boardUsers.map((user, index) => {
         if (index < limit) {
           return (
-            <Tooltip title="" key={index}>
+            <Tooltip title={user?.displayName} key={index}>
               <Avatar
                 sx={{ width: 32, height: 32, cursor: 'pointer' }}
-                alt=""
-                src=""
+                alt={user?.displayName}
+                src={user?.avatar}
               />
             </Tooltip>
           )
         }
       })}
 
-      {[...Array(16)].length > limit &&
+      {/* If number of user overceed limit */}
+      {boardUsers.length > limit &&
         <Tooltip title="Show more">
           <Box
             aria-describedby={popoverId}
@@ -51,7 +52,7 @@ function BoardUserGroup({ boardUsers = [], limit = 8 }) {
               backgroundColor: '#a4b0be'
             }}
           >
-            +{[...Array(16)].length - limit}
+            +{boardUsers.length - limit}
           </Box>
         </Tooltip>
       }
@@ -64,12 +65,12 @@ function BoardUserGroup({ boardUsers = [], limit = 8 }) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
         <Box sx={{ p: 2, maxWidth: '235px', display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-          {[...Array(16)].map((_, index) =>
-            <Tooltip title="" key={index}>
+          {boardUsers.map((user, index) =>
+            <Tooltip title={user?.displayName} key={index}>
               <Avatar
                 sx={{ width: 32, height: 32, cursor: 'pointer' }}
-                alt=""
-                src=""
+                alt={user?.displayName}
+                src={user?.avatar}
               />
             </Tooltip>
           )}
