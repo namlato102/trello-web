@@ -78,3 +78,9 @@ export const refreshTokenAPI = async () => {
   const response = await authorizedAxiosInstance.put(`${API_URL}/v1/users/refresh_token`)
   return response.data
 }
+
+export const inviteUserToBoardAPI = async (data) => {
+  const response = await authorizedAxiosInstance.post(`${API_URL}/v1/invitations/board`, data)
+  toast.success('User invited to board successfully!')
+  return response.data
+}
