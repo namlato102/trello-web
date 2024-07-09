@@ -5,22 +5,21 @@ import AppsIcon from '@mui/icons-material/Apps'
 import { ReactComponent as trelloLogo } from '~/assets/trello.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
-import Workspaces from './Menus/Workspaces'
-import Recent from './Menus/Recent'
-import Starred from './Menus/Starred'
-import Templates from './Menus/Templates'
-import Button from '@mui/material/Button'
+// import Workspaces from './Menus/Workspaces'
+// import Recent from './Menus/Recent'
+// import Starred from './Menus/Starred'
+// import Templates from './Menus/Templates'
+// import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
-import Badge from '@mui/material/Badge'
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import Tooltip from '@mui/material/Tooltip'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Profiles from './Menus/Profiles'
-import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
+// import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 import { Link } from 'react-router-dom'
+import Notifications from './Notifications/Notifications'
 
 function AppBar() {
   const [searchValue, setSearchValue] = useState('')
@@ -51,19 +50,19 @@ function AppBar() {
 
         <Box sx={{ display: { xs:'none', md: 'flex' } }}>
           {/* Workspaces */}
-          <Workspaces />
+          {/* <Workspaces /> */}
 
           {/* Recent */}
-          <Recent />
+          {/* <Recent /> */}
 
           {/* Starred */}
-          <Starred />
+          {/* <Starred /> */}
 
           {/* Templates */}
-          <Templates />
+          {/* <Templates /> */}
 
           {/* Create */}
-          <Button
+          {/* <Button
             sx={{
               color: 'white',
               border: 'none',
@@ -75,7 +74,7 @@ function AppBar() {
             startIcon={<LibraryAddIcon />}
           >
             Create
-          </Button>
+          </Button> */}
         </Box>
       </Box>
       <Box sx={{ display:'flex', alignItems:'center', gap: 1 }}>
@@ -127,11 +126,7 @@ function AppBar() {
         <ModeSelect />
 
         {/* Notifications */}
-        <Tooltip title="Notifications">
-          <Badge color="error" variant="dot" sx={{ cursor:'pointer' }}>
-            <NotificationsNoneIcon sx={{ color: 'white' }}/>
-          </Badge>
-        </Tooltip>
+        <Notifications />
 
         {/* Help */}
         <Tooltip title="Help">
