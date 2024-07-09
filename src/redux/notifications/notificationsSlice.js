@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import authorizedAxiosInstance from '~/utils/authorizeAxios'
-import { API_ROOT } from '~/utils/constants'
+import { API_URL } from '~/utils/constants'
 
 // Khởi tạo giá trị của một Slice trong redux
 const initialState = {
@@ -11,7 +11,7 @@ const initialState = {
 export const fetchInvitationsAPI = createAsyncThunk(
   'notifications/fetchInvitationsAPI',
   async () => {
-    const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/invitations`)
+    const response = await authorizedAxiosInstance.get(`${API_URL}/v1/invitations`)
     return response.data
   }
 )
@@ -19,7 +19,7 @@ export const fetchInvitationsAPI = createAsyncThunk(
 export const updateBoardInvitationAPI = createAsyncThunk(
   'notifications/updateBoardInvitationAPI',
   async ({ status, invitationId }) => {
-    const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/invitations/board/${invitationId}`, { status })
+    const response = await authorizedAxiosInstance.put(`${API_URL}/v1/invitations/board/${invitationId}`, { status })
     return response.data
   }
 )
