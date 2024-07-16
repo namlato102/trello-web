@@ -6,10 +6,12 @@ import Popover from '@mui/material/Popover'
 import AddIcon from '@mui/icons-material/Add'
 import Badge from '@mui/material/Badge'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import { useSelector } from 'react-redux'
+import { selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { CARD_MEMBER_ACTIONS } from '~/utils/constants'
 
 // Component show user group of a card
-// eslint-disable-next-line no-unused-vars
-function CardUserGroup({ cardMemberIds = [] }) {
+function CardUserGroup({ cardMemberIds = [], onUpdateCardMembers }) {
   /**
    * https://mui.com/material-ui/react-popover/
    */
@@ -21,14 +23,35 @@ function CardUserGroup({ cardMemberIds = [] }) {
     else setAnchorPopoverElement(null)
   }
 
+  // Lấy activeBoard từ redux ra để lấy được toàn bộ thông tin những thành viên của cái board thông qua field: FE_allUsers
+  const board = useSelector(selectCurrentActiveBoard)
+
+  /**
+   * Thành viên trong card sẽ phải là tập con của thành viên trong board
+   * Vì thế dựa vào mảng board.FE_allUsers và card.memberIds rồi tạo ra một mảng FE_CardMembers
+   * chứa đủ thông tin của User để hiển thị ra ngoài giao diện, bởi mặc định trong card chỉ lưu memberIds của User thôi
+   */
+  const FE_CardMembers = cardMemberIds.map(id => board.FE_allUsers.find(u => u._id === id))
+  // console.log('FE_CardMembers:', FE_CardMembers)
+
+  const handleUpdateCardMembers = (user) => {
+    // console.log('user:', user)
+    const incomingMemberInfo = {
+      userId: user._id,
+      action: cardMemberIds.includes(user._id) ? CARD_MEMBER_ACTIONS.REMOVE : CARD_MEMBER_ACTIONS.ADD
+    }
+    // console.log('incomingMemberInfo:', incomingMemberInfo)
+    onUpdateCardMembers(incomingMemberInfo)
+  }
+
   return (
     <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-      {[...Array(8)].map((_, index) =>
-        <Tooltip title="" key={index}>
+      {FE_CardMembers.map(user =>
+        <Tooltip title={user.displayName} key={user._id}>
           <Avatar
             sx={{ width: 32, height: 32, cursor: 'pointer' }}
-            alt=""
-            src=""
+            alt={user.displayName}
+            src={user?.avatar}
           />
         </Tooltip>
       )}
@@ -69,19 +92,24 @@ function CardUserGroup({ cardMemberIds = [] }) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
         <Box sx={{ p: 2, maxWidth: '260px', display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
-          {[...Array(16)].map((_, index) =>
-            <Tooltip title="" key={index}>
+          {board.FE_allUsers.map(user =>
+            <Tooltip title={user.displayName} key={user._id}>
               {/* https://mui.com/material-ui/react-avatar/#with-badge */}
               <Badge
                 sx={{ cursor: 'pointer' }}
                 overlap="rectangular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                badgeContent={<CheckCircleIcon fontSize="small" sx={{ color: '#27ae60' }} />}
+                badgeContent={
+                  cardMemberIds.includes(user._id)
+                    ? <CheckCircleIcon fontSize="small" sx={{ color: '#27ae60' }} />
+                    : null
+                }
+                onClick={() => handleUpdateCardMembers(user)}
               >
                 <Avatar
                   sx={{ width: 32, height: 32 }}
-                  alt=""
-                  src=""
+                  alt={user.displayName}
+                  src={user?.avatar}
                 />
               </Badge>
             </Tooltip>
