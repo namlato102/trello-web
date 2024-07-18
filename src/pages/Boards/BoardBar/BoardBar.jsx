@@ -5,12 +5,10 @@ import VpnLockIcon from '@mui/icons-material/VpnLock'
 import AddToDriveIcon from '@mui/icons-material/AddToDrive'
 import BoltIcon from '@mui/icons-material/Bolt'
 import FilterListIcon from '@mui/icons-material/FilterList'
-import Avatar from '@mui/material/Avatar'
-import AvatarGroup from '@mui/material/AvatarGroup'
 import Tooltip from '@mui/material/Tooltip'
-import Button from '@mui/material/Button'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { capitalizeFirstLetter } from '~/utils/formatters'
+import BoardUserGroup from './BoardUserGroup'
+import InviteBoardUser from './InviteBoardUser'
 
 const MENU_STYLE = {
   color: 'white',
@@ -83,55 +81,11 @@ function BoardBar({ board }) {
       </Box>
 
       <Box sx={{ display:'flex', alignItems:'center', gap: 1 }}>
-        {/* Invite Button */}
-        <Button
-          sx={{
-            color: 'white',
-            borderColor: 'white',
-            '&:hover': {
-              borderColor: 'white'
-            }
-          }}
-          variant="outlined"
-          startIcon={<PersonAddIcon />}
-        >
-          Invite
-        </Button>
+        {/* Invite user as member */}
+        <InviteBoardUser boardId={board._id} />
 
         {/* Members */}
-        <AvatarGroup
-          max={4}
-          sx={{
-            gap: '10px',
-            '& .MuiAvatar-root': {
-              width: '32px',
-              height: '32px',
-              fontSize: '16px',
-              border: 'none',
-              color: 'white',
-              cursor: 'pointer',
-              '&:first-of-type': {
-                bgcolor: '#a4b0be'
-              }
-            }
-          }}
-        >
-          <Tooltip title="Remy Sharp">
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </Tooltip>
-          <Tooltip title="Travis Howard">
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-          </Tooltip>
-          <Tooltip title="Cindy Baker">
-            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-          </Tooltip>
-          <Tooltip title="Agnes Walker">
-            <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-          </Tooltip>
-          <Tooltip title="Trevor Henderson">
-            <Avatar alt="Trevor Henderson" src="/static/images/avatar/5.jpg" />
-          </Tooltip>
-        </AvatarGroup>
+        <BoardUserGroup boardUsers={board.FE_allUsers} />
       </Box>
     </Box>
   )

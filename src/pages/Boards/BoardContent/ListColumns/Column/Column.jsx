@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Divider from '@mui/material/Divider'
@@ -8,11 +7,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useState } from 'react'
 import Tooltip from '@mui/material/Tooltip'
-// import ContentCut from '@mui/icons-material/ContentCut'
 import DeleteIcon from '@mui/icons-material/Delete'
-// import Cloud from '@mui/icons-material/Cloud'
-// import ContentCopy from '@mui/icons-material/ContentCopy'
-// import ContentPaste from '@mui/icons-material/ContentPaste'
 import AddCardIcon from '@mui/icons-material/AddCard'
 import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
@@ -28,7 +23,17 @@ import { toast } from 'react-toastify'
 
 import { useConfirm } from 'material-ui-confirm'
 
-function Column({ column, createNewCard, deleteColumnDetails }) {
+import { createNewCardAPI, deleteColumnDetailsAPI } from '~/apis'
+import { cloneDeep } from 'lodash'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  updateCurrentActiveBoard,
+  selectCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
+import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
+import { updateColumnDetailsAPI } from '~/apis'
+
+function Column({ column }) {
   const {
     attributes,
     listeners,
@@ -63,6 +68,37 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
 
   const [newCardTitle, setNewCardTitle] = useState('')
 
+  // use selector to get board from redux and dispatch to call action instead of react useState
+  const board = useSelector(selectCurrentActiveBoard)
+  const dispatch = useDispatch()
+
+  // call api to create new card and update board state
+  const createNewCard = async (newCardData) => {
+    // use redux global store to store board state instead of call props function
+    // call and wait for api to create new card
+    const createdCard = await createNewCardAPI({
+      ...newCardData,
+      boardId: board._id
+    })
+    // then refresh board state from useState() instead call api again (by reload page)
+    const newBoard = cloneDeep(board)
+    const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
+    if (columnToUpdate) {
+
+      // if column has placeholder card, replace it with new card
+      if (columnToUpdate.cards.some(card => card.FE_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        // if column has card, add new card to the end of cards array
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
+    }
+
+    dispatch(updateCurrentActiveBoard(newBoard))
+  }
+
   // react hook form
   const addNewCard = () => {
     if (!newCardTitle) {
@@ -76,11 +112,8 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       columnId: column._id
     }
 
-    // call function props createNewColumn from boards/_id.jsx
-    // use redux global store to store board state instead of local state
     createNewCard(newCardData)
 
-    // console.log('Add new column with title:', newColumnTitle)
     // close state and clear input
     toggleOpenNewCard()
     setNewCardTitle('')
@@ -88,17 +121,28 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
 
   // delete column and cards in it
   const confirmDeleteColumn = useConfirm()
+
+  // delete column and its cards
+  const deleteColumnDetails = (columnId) => {
+    // update state board
+    const newBoard = cloneDeep(board)
+    newBoard.columns = newBoard.columns.filter(column => column._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
+    dispatch(updateCurrentActiveBoard(newBoard))
+
+    // call api to delete column
+    deleteColumnDetailsAPI(columnId).then(res => {
+      // show toast notification from BE response
+      toast.success(res?.deleteResult)
+    })
+  }
+
   const handleDeleteColumn = () => {
     // console.log('Delete column:', column.title)
     confirmDeleteColumn({
       title: 'Delete Column?',
-      // description: 'This action will permanently delete your Column and its Cards! Are you sure?',
       confirmationText: 'Yes, delete it!',
       cancellationText: 'No, keep it',
-      // dialogProps: { maxWidth: 'xs' },
-      // confirmationButtonProps: { color: 'error' },
-      // cancellationButtonProps: { color: 'primary', variant: 'contained' },
-      // allowClose: false,
       description: `Enter "${column.title}" to delete this column! Are you sure?`,
       confirmationKeyword: `${column.title}`
     })
@@ -108,6 +152,16 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       .catch(() => {
         /* ... */
       })
+  }
+
+  const onUpdateColumnTitle = (newTitle) => {
+    // Gọi API update column và xử lý dữ liệu activeBoard trong redux
+    updateColumnDetailsAPI(column._id, { title: newTitle }).then(() => {
+      const newBoard = cloneDeep(board)
+      const columnToUpdate = newBoard.columns.find(col => col._id === column._id)
+      if (columnToUpdate) columnToUpdate.title = newTitle
+      dispatch(updateCurrentActiveBoard(newBoard))
+    })
   }
 
   return (
@@ -133,13 +187,11 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
           alignItems: 'center',
           justifyContent: 'space-between'
         }}>
-          <Typography variant='h6' sx={{
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}>
-            {column?.title}
-          </Typography>
+          <ToggleFocusInput
+            value={column?.title}
+            onChangedValue={onUpdateColumnTitle}
+            data-no-dnd="true"
+          />
           <Box>
             <Tooltip title="More">
               <ExpandMoreIcon
@@ -298,6 +350,7 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
               />
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Button
+                  className='interceptor-loading'
                   onClick={addNewCard}
                   variant='contained'
                   color='success'
