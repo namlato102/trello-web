@@ -26,6 +26,11 @@ export const updateBoardDetailsAPI = async (boardId, updateData) => {
   return response.data
 }
 
+export const deleteBoardAPI = async (boardId) => {
+  const response = await axios.delete(`${API_URL}/v1/boards/${boardId}`)
+  return response.data
+}
+
 // CRUD column
 export const createNewColumnAPI = async (newColumnData) => {
   const response = await authorizedAxiosInstance.post(`${API_URL}/v1/columns`, newColumnData)

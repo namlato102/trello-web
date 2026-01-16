@@ -24,7 +24,33 @@ const MENU_STYLE = {
   }
 }
 
+import { toast } from 'react-toastify'
+import { deleteBoardAPI } from '~/apis'
+import { useConfirm } from 'material-ui-confirm'
+import { useNavigate } from 'react-router-dom'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+
 function BoardBar({ board }) {
+  const navigate = useNavigate()
+  const confirm = useConfirm()
+
+  const handleDeleteBoard = () => {
+    confirm({
+      title: 'Delete Model?',
+      description: 'This action will permanently delete your Board and its Cards! Are you sure?',
+      confirmationText: 'Confirm',
+      cancellationText: 'Cancel'
+    })
+      .then(() => {
+        deleteBoardAPI(board._id)
+          .then(res => {
+            toast.success(res.deleteResult)
+            navigate('/boards')
+          })
+      })
+      .catch(() => { })
+  }
+
   return (
     <Box px={1} sx={{
       width: '100%',
@@ -36,7 +62,7 @@ function BoardBar({ board }) {
       overflowX: 'auto',
       bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2')
     }}>
-      <Box sx={{ display:'flex', alignItems:'center', gap: 1 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         {/* Dashboard */}
         <Tooltip title={board?.description}>
           <Chip
@@ -80,12 +106,72 @@ function BoardBar({ board }) {
         />
       </Box>
 
-      <Box sx={{ display:'flex', alignItems:'center', gap: 1 }}>
-        {/* Invite user as member */}
-        <InviteBoardUser boardId={board._id} />
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        {/* Invite Button */}
+        <Button
+          sx={{
+            color: 'white',
+            borderColor: 'white',
+            '&:hover': {
+              borderColor: 'white'
+            }
+          }}
+          variant="outlined"
+          startIcon={<PersonAddIcon />}
+        >
+          Invite
+        </Button>
+
+        {/* Delete Board Button */}
+        <Button
+          sx={{
+            color: 'white',
+            borderColor: 'white',
+            '&:hover': {
+              borderColor: 'white'
+            }
+          }}
+          variant="outlined"
+          startIcon={<DeleteForeverIcon />}
+          onClick={handleDeleteBoard}
+        >
+          Delete
+        </Button>
 
         {/* Members */}
-        <BoardUserGroup boardUsers={board.FE_allUsers} />
+        <AvatarGroup
+          max={4}
+          sx={{
+            gap: '10px',
+            '& .MuiAvatar-root': {
+              width: '32px',
+              height: '32px',
+              fontSize: '16px',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              '&:first-of-type': {
+                bgcolor: '#a4b0be'
+              }
+            }
+          }}
+        >
+          <Tooltip title="Remy Sharp">
+            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+          </Tooltip>
+          <Tooltip title="Travis Howard">
+            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
+          </Tooltip>
+          <Tooltip title="Cindy Baker">
+            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
+          </Tooltip>
+          <Tooltip title="Agnes Walker">
+            <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
+          </Tooltip>
+          <Tooltip title="Trevor Henderson">
+            <Avatar alt="Trevor Henderson" src="/static/images/avatar/5.jpg" />
+          </Tooltip>
+        </AvatarGroup>
       </Box>
     </Box>
   )
